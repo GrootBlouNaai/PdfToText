@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>PDF to Text Converter</title>
+  <script src="neutralino.js"></script>
+  <script>
+    function handleFileDrop(e) {
+      e.preventDefault();
+      var file = e.dataTransfer.files[0];
+      Neutralino.os.readFile(file.path, 'binary', function(data) {
+        Neutralino.request({
+          method: 'POST',
+          url: 'http://localhost:8000/convert',
+          data: {
+            file: data,
+            filename: file.name
+          },
+          success: function (data) {
+            document.getElementById("result").innerText = data;
+          },
+          error: function (data) {
+            console.error(data);
+          }
+        });
+      });
+    }
+
+    function handleFileInput(e) {
+      var file = e.target.files[0];
+      Neutralino.os.readFile(file.path, 'binary', function(data) {
+        Neutralino.request({
+          method: 'POST',
+          url: 'http://localhost:8000/convert',
+          data: {
+            file: data,
+            filename: file.name
+          },
+          success: function (data) {
+            document.getElementById("result").innerText = data;
+          },
+          error: function (data) {
+            console.error(data);
+          }
+        });
+      });
+    }
+  </script>
+</head>
+<body>
+  <h1>PDF to Text Converter</h1>
+  <div id="dropzone" ondrop="handleFileDrop(event)" ondragover="event.preventDefault()">
+    Drop your PDF file here or
+    <input type="file" onchange="handleFileInput(event)">
+  </div>
+  <pre id="result"></pre>
+</body>
+</html>
